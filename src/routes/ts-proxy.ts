@@ -3,17 +3,17 @@ import * as https from 'https';
 import { allowedOrigins } from '../utils/utils';
 // export const runtime = "edge"
 // Define the function for handling the API request
-export default async function TsProxy(req: Request, res: Response) :Promise<any> {
+export default async function TsProxy(req: Request, res: Response): Promise<any> {
     try {
-      
-           if (origin && allowedOrigins.includes(origin)) {
-                    res.setHeader('Access-Control-Allow-Origin', origin);
-                }
-            
-                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-                res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-                res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
-        
+        const origin = req.headers.origin
+        if (origin && allowedOrigins.includes(origin)) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+        }
+
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
+
         // Get the URL from the query parameter and ensure it's a string
         const url = req.query.url as string;
         // Get the headers from the query or default to an empty object
@@ -23,23 +23,23 @@ export default async function TsProxy(req: Request, res: Response) :Promise<any>
         if (!url) {
             return res.status(400).json({ error: 'URL parameter is required' });
         }
-        
+
         // Set up options for the HTTPS request, including headers
         // console.log(headers)
         const options: https.RequestOptions = {
             headers,
         };
-        
+
         // Make the HTTPS request
         https.get(url, options, (response) => {
             // Forward the response status code from the external server
             res.status(response.statusCode || 200);
-            
+
             // Forward all headers from the external response to the client
             Object.keys(response.headers).forEach((key) => {
-                res.setHeader(key,`${response.headers[key]}`);
+                res.setHeader(key, `${response.headers[key]}`);
             });
-            
+
             // Pipe the external response body to the client
             response.pipe(res);
         }).on('error', (error) => {
@@ -52,5 +52,5 @@ export default async function TsProxy(req: Request, res: Response) :Promise<any>
         console.error(msg)
         console.error(error)
         res.send(error)
-    } 
     }
+}
