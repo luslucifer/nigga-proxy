@@ -1,9 +1,18 @@
 import type { Request, Response } from 'express';
 import * as https from 'https';
+import { allowedOrigins } from '../utils/utils';
 // export const runtime = "edge"
 // Define the function for handling the API request
 export default async function TsProxy(req: Request, res: Response) :Promise<any> {
     try {
+      
+           if (origin && allowedOrigins.includes(origin)) {
+                    res.setHeader('Access-Control-Allow-Origin', origin);
+                }
+            
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+                res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+                res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
         
         // Get the URL from the query parameter and ensure it's a string
         const url = req.query.url as string;

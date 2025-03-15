@@ -1,5 +1,5 @@
 // import { BASE_PATH, userAgent } from "../../utils/utils";
-import { BASE_PATH,userAgent } from "../utils/utils";
+import { BASE_PATH,userAgent,allowedOrigins } from "../utils/utils";
 import type { Request, Response } from "express";
 // import axios from "axios"; // Import axios
 
@@ -7,8 +7,17 @@ import type { Request, Response } from "express";
 
 export default async function m3u8(req: Request, res: Response) {
     try {
+        const origin = req.headers.origin
+        console.log(allowedOrigins)
+        console.log(' nigga chod ')
 
+        if (origin && allowedOrigins.includes(origin)) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+        }
     
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
         
         const url:any = req.query.url;
         let headers: any = {'Referer':(url.includes('file2')? 'https://megacloud.store/':'https://kerolaunochan.online/')};

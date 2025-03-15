@@ -44,11 +44,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TsProxy;
 const https = __importStar(require("https"));
+const utils_1 = require("../utils/utils");
 // export const runtime = "edge"
 // Define the function for handling the API request
 function TsProxy(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            if (origin && utils_1.allowedOrigins.includes(origin)) {
+                res.setHeader('Access-Control-Allow-Origin', origin);
+            }
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
             // Get the URL from the query parameter and ensure it's a string
             const url = req.query.url;
             // Get the headers from the query or default to an empty object

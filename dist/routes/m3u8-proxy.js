@@ -17,6 +17,15 @@ const utils_1 = require("../utils/utils");
 function m3u8(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const origin = req.headers.origin;
+            console.log(utils_1.allowedOrigins);
+            console.log(' nigga chod ');
+            if (origin && utils_1.allowedOrigins.includes(origin)) {
+                res.setHeader('Access-Control-Allow-Origin', origin);
+            }
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=86400');
             const url = req.query.url;
             let headers = { 'Referer': (url.includes('file2') ? 'https://megacloud.store/' : 'https://kerolaunochan.online/') };
             let h = headers;
